@@ -9,7 +9,7 @@ import retrofit2.create
 
 //object define un Singleton, una unica instancia en toda la aplicacion, para no recrear xonexiones htto innecesariamente
 object RetrofitClient {
-    private const val BASE_URL = "https://api.themovieb.org/3/"
+    private const val BASE_URL = "https://api.themoviedb.org/3/"
 
     //creamos el interceptor para ver los logs de red en el Logcat
     private val loggingInterceptor = HttpLoggingInterceptor().apply {

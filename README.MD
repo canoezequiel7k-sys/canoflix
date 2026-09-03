@@ -66,3 +66,6 @@ Architecture:
 
 ###  Register display
 ![PANTALLA DEL Register](screenshots/register_display_v1.0.0.png)
+
+###  Home display
+![PANTALLA HOME](screenshots/home_display_v1.0.0.png)

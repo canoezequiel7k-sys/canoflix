@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.arigondev.canoflix.ui.auth.LoginScreen
 import com.arigondev.canoflix.ui.auth.RegisterScreen
+import com.arigondev.canoflix.ui.home.HomeScreen
 
 
 //Definimos las rutas (id de texto para cada pantalla)
@@ -59,19 +60,7 @@ fun CanoFlixNavGraph(
         }
     //Ruta del HOME catalogo de peliculas - temporal por ahora
         composable (route = Screen.HOME){
-            androidx.compose.foundation.layout.Box(
-                modifier = androidx.compose.ui.Modifier
-                    .fillMaxSize()
-                    .background(androidx.compose.ui.graphics.Color(0xFF141414)),
-                contentAlignment = androidx.compose.ui.Alignment.Center
-            ){
-                androidx.compose.material3.Text(
-                    text = "¡Bienvenido a CanoFlix (Home) \uD83C\uDFAC!",
-                    color = androidx.compose.ui.graphics.Color.White,
-                    fontSize = 24.sp,
-                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
-                )
-            }
+            HomeScreen()
         }
     }
 }
