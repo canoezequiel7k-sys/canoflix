@@ -7,4 +7,11 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+
+    <!-- Colores para CanoFlix -->
+    <color name="netflix_red">#E50914</color>
+    <color name="netflix_black">#141414</color>
+
+
 </resources>

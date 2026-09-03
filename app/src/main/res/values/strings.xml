@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">CanoFlix</string>
+
+
+
+    <string name="_errorMessage">"Por favor, completa todos los campos"</string>
+    <string name="_errorMensageEmail">"Por favor, completa todos los campos"</string>
+    <string name="_errorMensageLogin">Error al iniciar sesión: </string>
+
+
+
+
+
+
 </resources>
