@@ -56,3 +56,13 @@ Architecture:
 │                     │
 │                     ├──► [DetailScreen] (Detalle de película)
 │                     └──► [FavoritesScreen] ("Mi Lista")
+
+#[Screenshots]
+
+
+###  Login display
+![PANTALLA DEL LOGIN](screenshots/login_display_v1.0.0.png)
+
+
+###  Register display
+![PANTALLA DEL Register](screenshots/register_display_v1.0.0.png)
