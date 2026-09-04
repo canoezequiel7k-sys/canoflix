@@ -13,13 +13,14 @@ import com.arigondev.canoflix.ui.auth.LoginScreen
 import com.arigondev.canoflix.ui.auth.RegisterScreen
 import com.arigondev.canoflix.ui.detail.DetailScreen
 import com.arigondev.canoflix.ui.home.HomeScreen
+import com.arigondev.canoflix.ui.main.MainScreen
 
 
 //Definimos las rutas (id de texto para cada pantalla)
 object Screen {
     const val LOGIN = "login_screen"
     const val REGISTER = "register_screen"
-    const val HOME = "home_screen"
+    const val MAIN = "main_screen"
     const val DETAIL = "detail_screen"
 }
 
@@ -36,7 +37,7 @@ fun CanoFlixNavGraph(
         composable (route = Screen.LOGIN){
             LoginScreen(
                 onNavigateToHome = {
-                    navController.navigate(Screen.HOME){
+                    navController.navigate(Screen.MAIN){
                         popUpTo(Screen.LOGIN){inclusive = true} // Borra el login del historial
                     }
                 },
@@ -51,7 +52,7 @@ fun CanoFlixNavGraph(
         composable(route = Screen.REGISTER){
             RegisterScreen(
                 onNavigateToHome = {
-                    navController.navigate(Screen.HOME){
+                    navController.navigate(Screen.MAIN){
                         popUpTo(Screen.LOGIN){inclusive = true}
                     }
                 },
@@ -60,9 +61,15 @@ fun CanoFlixNavGraph(
                 }
             )
         }
+
     //Ruta del HOME catalogo de peliculas - temporal por ahora
-        composable(route = Screen.HOME) {
-            HomeScreen(
+        composable(route = Screen.MAIN) {
+            MainScreen(
+                onLogout = {
+                    navController.navigate(Screen.LOGIN){
+                        popUpTo(Screen.MAIN) {inclusive = true}
+                    }
+                },
                 onMovieClick = { movieId ->
                     navController.navigate("${Screen.DETAIL}/$movieId")
                 }

@@ -1,5 +1,6 @@
 package com.arigondev.canoflix.ui.detail
 
+import android.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,16 +18,24 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,9 +52,15 @@ fun DetailScreen(
     viewModel: DetailViewModel = viewModel(),
     onNavigateBack: () -> Unit
 ){
+    //observadores
     val movie by viewModel.movie.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
+    val isFavorite by viewModel.isFavorite.collectAsState()
+    //recordatorios
+    var userReview by remember { mutableStateOf("") }
+    var userStars by remember { mutableIntStateOf(5) }
+
 
     val imageBaseUrl = "https://image.tmdb.org/t/p/w500"
 
@@ -147,15 +162,60 @@ fun DetailScreen(
                             .height(48.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Add,
+                            imageVector = Icons.Default.PlayArrow,
+                            contentDescription = "Reprodecir",
+                            tint = Color.Black
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Reproducir", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    //campo de reseña(opcional)
+                    OutlinedTextField(
+                        value = userReview,
+                        onValueChange = { userReview = it},
+                        label = {Text("Escribe una reseña...", color = Color.Gray)},
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFFE50914),
+                            unfocusedBorderColor = Color.Gray,
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.White
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+
+                    //Boton dinamico de "mi lista"
+                    Button(
+                        onClick = {
+                            viewModel.toggleFavorite(userReview = userReview, userStars = userStars)
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (isFavorite) Color.DarkGray else Color(0xFFE50914)
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp)
+                    ) {
+                        Icon(
+                            imageVector = if (isFavorite) Icons.Default.Check else Icons.Default.Add,
                             contentDescription = "Mi Lista",
                             tint = Color.White
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Añadir a Mi Lista", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                        Text(
+                            text = if (isFavorite) "Eliminar de Mi Lista" else "Añadir a Mi Lista",
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp
+                        )
                     }
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
                     //sinopsis
                     Text(
