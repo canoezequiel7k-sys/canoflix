@@ -29,4 +29,10 @@ class MovieRepository {
     suspend fun getMovieDetails(movieId: Int): MovieDto {
         return RetrofitClient.apiService.getMovieDetails(movieId = movieId, apiKey = apiKey)
     }
+
+    //obtener pelicula buscada
+    suspend fun searchMovies(query: String): List<MovieDto>{
+        val response = RetrofitClient.apiService.searchMovies(apiKey, query = query)
+        return response.results
+    }
 }

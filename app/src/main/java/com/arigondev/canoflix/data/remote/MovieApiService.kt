@@ -36,4 +36,11 @@ interface MovieApiService {
         @Query("language") language: String = "es-ES"
     ) : MovieDto
 
+    //ENDPOINT PARA OBTENER UNA BUSQUEDA
+    @GET("search/movie")
+    suspend fun searchMovies(
+        @Query("api_key") apiKey: String,
+        @Query("query") query: String, //Lo que el usuario escribe
+        @Query("language") language: String = "es-ES"
+    ) : MovieResponse
 }

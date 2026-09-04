@@ -5,7 +5,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -25,12 +27,15 @@ import androidx.navigation.compose.rememberNavController
 import com.arigondev.canoflix.ui.favorites.FavoritesScreen
 import com.arigondev.canoflix.ui.home.HomeScreen
 import com.arigondev.canoflix.ui.profile.ProfileScreen
+import com.arigondev.canoflix.ui.search.SearchScreen
 
 // Rutas internas del menú inferior
 sealed class BottomTab(val route: String, val title: String, val icon: ImageVector) {
     object Home : BottomTab("tab_home", "Inicio", Icons.Default.Home)
+    object Search: BottomTab("tab_search","Buscar", Icons.Default.Search)
     object Favorites : BottomTab("tab_favorites", "Mi Lista", Icons.Default.Favorite)
     object Profile : BottomTab("tab_profile", "Perfil", Icons.Default.Person)
+
 }
 
 @Composable
@@ -41,6 +46,7 @@ fun MainScreen(
 ) {
     val tabs = listOf(
         BottomTab.Home,
+        BottomTab.Search,
         BottomTab.Favorites,
         BottomTab.Profile
     )
@@ -49,7 +55,7 @@ fun MainScreen(
     Scaffold(
         bottomBar = {
             NavigationBar(
-                containerColor = Color(0xFF1F1F1F),
+                containerColor = MaterialTheme.colorScheme.background,
                 contentColor = Color.White
             ) {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -72,8 +78,8 @@ fun MainScreen(
                             }
                         },
                         colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = Color(0xFFE50914),
-                            selectedTextColor = Color(0xFFE50914),
+                            selectedIconColor = MaterialTheme.colorScheme.primary,
+                            selectedTextColor = MaterialTheme.colorScheme.primary,
                             unselectedIconColor = Color.Gray,
                             unselectedTextColor = Color.Gray,
                             indicatorColor = Color.Transparent
@@ -97,6 +103,9 @@ fun MainScreen(
             }
             composable(BottomTab.Profile.route) {
                 ProfileScreen(onLogout = onLogout)
+            }
+            composable (BottomTab.Search.route){
+                SearchScreen(onMovieClick = onMovieClick)
             }
         }
     }

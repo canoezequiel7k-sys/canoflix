@@ -22,6 +22,12 @@ class HomeViewModel: ViewModel() {
     private val _actionMovies = MutableStateFlow<List<MovieDto>>(emptyList())
     val actionMovies : StateFlow<List<MovieDto>> = _actionMovies.asStateFlow()
 
+    private val _terrorMovies = MutableStateFlow<List<MovieDto>>(emptyList())
+    val terrorMovies : StateFlow<List<MovieDto>> = _terrorMovies.asStateFlow()
+
+    private val _animationMovies = MutableStateFlow<List<MovieDto>>(emptyList())
+    val animationMovies : StateFlow<List<MovieDto>> = _animationMovies.asStateFlow()
+
 
     //Estados de carga y Errores
     private val _isLoading = MutableStateFlow(false)
@@ -47,6 +53,8 @@ class HomeViewModel: ViewModel() {
                 _popularMovies.value = repository.getPopularMovies()
                 _topRatedMovies.value = repository.getTopRatedMovies()
                 _actionMovies.value = repository.getMoviesByGenre(genreId = "28") //28 es Aacion en TMDb
+                _terrorMovies.value = repository.getMoviesByGenre(genreId = "27") //27 es Terror eb TMDb
+                _animationMovies.value = repository.getMoviesByGenre(genreId = "16") //16 es Animada eb TMDb
             }catch (e: Exception){
                 _errorMessage.value = "Error al cargar peliculas: ${e.localizedMessage}"
             }finally {

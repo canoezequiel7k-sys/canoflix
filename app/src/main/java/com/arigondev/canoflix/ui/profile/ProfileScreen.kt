@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -35,7 +36,7 @@ fun ProfileScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF141414))
+            .background(MaterialTheme.colorScheme.background)
             .padding(24.dp),
         contentAlignment = Alignment.Center
     ){
@@ -48,7 +49,7 @@ fun ProfileScreen(
             Icon(
                 imageVector = Icons.Default.Person,
                 contentDescription = "Perfil",
-                tint = Color(0xFFE50914),
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(96.dp)
             )
 
@@ -71,7 +72,7 @@ fun ProfileScreen(
 
             //Boton Cerrar Sesion
             Button(onClick = onLogout,
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE50914)),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)

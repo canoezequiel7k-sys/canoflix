@@ -47,16 +47,18 @@ fun HomeScreen(
     val actionMovies by viewModel.actionMovies.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
+    val terrorMovies by viewModel.terrorMovies.collectAsState()
+    val animationMovies by viewModel.animationMovies.collectAsState()
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF141414)) //fondo negro estilo netflix
+            .background(MaterialTheme.colorScheme.background) //fondo negro estilo netflix
     ){
         if (isLoading) {
             //indicador de carga centrado
             CircularProgressIndicator(
-                color = Color(0xFFE50914), //rojo netflix
+                color = MaterialTheme.colorScheme.background, //rojo netflix
                 modifier = Modifier.align(Alignment.Center)
             )
         }else if (errorMessage != null){
@@ -80,7 +82,7 @@ fun HomeScreen(
                 item {
                     Text(
                         text = "CANOFLIX",
-                        color = Color(0XFFE50914),
+                        color = MaterialTheme.colorScheme.primary,
                         fontSize = 32.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(start = 16.dp, top = 24.dp)
@@ -110,6 +112,24 @@ fun HomeScreen(
                     MovieRow(
                         title = "Accion / Adrenalina",
                         movies = actionMovies,
+                        imageBaseUrl = IMAGE_BASE_URL,
+                        onMovieClick = onMovieClick)
+                }
+
+                //fila 4 Peliculas de Terror
+                item {
+                    MovieRow(
+                        title = "Terror / Suspenso",
+                        movies = terrorMovies,
+                        imageBaseUrl = IMAGE_BASE_URL,
+                        onMovieClick = onMovieClick)
+                }
+
+                //fila 5 Peliculas Animadas
+                item {
+                    MovieRow(
+                        title = "Animadas / Dibujos",
+                        movies = animationMovies,
                         imageBaseUrl = IMAGE_BASE_URL,
                         onMovieClick = onMovieClick)
                 }

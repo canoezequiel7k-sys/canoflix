@@ -36,7 +36,7 @@ fun FavoritesScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF141414))
+            .background(MaterialTheme.colorScheme.background)
             .padding(16.dp)
     ){
         Column(
@@ -94,7 +94,7 @@ fun FavoriteMovieItem(
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF1F1F1F)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
         shape = MaterialTheme.shapes.medium
     ) {
         Row(

@@ -67,11 +67,11 @@ fun DetailScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF141414))
+            .background(MaterialTheme.colorScheme.background)
     ){
         if (isLoading){
             CircularProgressIndicator(
-                color = Color(0xFFE50914),
+                color = MaterialTheme.colorScheme.background,
                 modifier = Modifier.align(Alignment.Center)
             )
         }else if (errorMessage != null){
@@ -178,7 +178,7 @@ fun DetailScreen(
                         onValueChange = { userReview = it},
                         label = {Text("Escribe una reseña...", color = Color.Gray)},
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Color(0xFFE50914),
+                            focusedBorderColor = MaterialTheme.colorScheme.background,
                             unfocusedBorderColor = Color.Gray,
                             focusedTextColor = Color.White,
                             unfocusedTextColor = Color.White
@@ -195,7 +195,7 @@ fun DetailScreen(
                             viewModel.toggleFavorite(userReview = userReview, userStars = userStars)
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = if (isFavorite) Color.DarkGray else Color(0xFFE50914)
+                            containerColor = if (isFavorite) Color.DarkGray else MaterialTheme.colorScheme.primary
                         ),
                         modifier = Modifier
                             .fillMaxWidth()
