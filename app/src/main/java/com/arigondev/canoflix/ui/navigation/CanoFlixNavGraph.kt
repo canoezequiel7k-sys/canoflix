@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.arigondev.canoflix.ui.auth.LoginScreen
 import com.arigondev.canoflix.ui.auth.RegisterScreen
+import com.arigondev.canoflix.ui.detail.DetailScreen
 import com.arigondev.canoflix.ui.home.HomeScreen
 
 
@@ -19,6 +20,7 @@ object Screen {
     const val LOGIN = "login_screen"
     const val REGISTER = "register_screen"
     const val HOME = "home_screen"
+    const val DETAIL = "detail_screen"
 }
 
 @Composable
@@ -59,9 +61,22 @@ fun CanoFlixNavGraph(
             )
         }
     //Ruta del HOME catalogo de peliculas - temporal por ahora
-        composable (route = Screen.HOME){
-            HomeScreen()
+        composable(route = Screen.HOME) {
+            HomeScreen(
+                onMovieClick = { movieId ->
+                    navController.navigate("${Screen.DETAIL}/$movieId")
+                }
+            )
         }
+
+        composable(route = "${Screen.DETAIL}/{movieId}") {
+            DetailScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
     }
 }
 

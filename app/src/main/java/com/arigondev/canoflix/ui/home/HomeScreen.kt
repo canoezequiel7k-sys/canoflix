@@ -1,6 +1,7 @@
 package com.arigondev.canoflix.ui.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +35,8 @@ import com.arigondev.canoflix.data.remote.MovieDto
 
 @Composable
 fun HomeScreen(
+    //recibe el ID de la pelicula
+    onMovieClick: (Int) -> Unit, 
     viewModel: HomeViewModel = viewModel()
 ){
     //observamos los StateFlows de nuestro HomeViewModel
@@ -86,17 +89,29 @@ fun HomeScreen(
 
                 //Fila 1 Peliculas populares
                 item {
-                    MovieRow(title = "Tendencias / Populares", movies = popularMovies, imageBaseUrl = IMAGE_BASE_URL)
+                    MovieRow(
+                        title = "Tendencias / Populares",
+                        movies = popularMovies,
+                        imageBaseUrl = IMAGE_BASE_URL,
+                        onMovieClick = onMovieClick)
                 }
 
                 //fila 2 Peliculas clasicas
                 item {
-                    MovieRow(title = "Clasicos", movies = topRatedMovies, imageBaseUrl = IMAGE_BASE_URL)
+                    MovieRow(
+                        title = "Clasicos",
+                        movies = topRatedMovies,
+                        imageBaseUrl = IMAGE_BASE_URL,
+                        onMovieClick = onMovieClick)
                 }
 
                 //fila 3 Peliculas de Accion
                 item {
-                    MovieRow(title = "Accion / Adrenalina", movies = actionMovies, imageBaseUrl = IMAGE_BASE_URL)
+                    MovieRow(
+                        title = "Accion / Adrenalina",
+                        movies = actionMovies,
+                        imageBaseUrl = IMAGE_BASE_URL,
+                        onMovieClick = onMovieClick)
                 }
             }
         }
@@ -105,7 +120,10 @@ fun HomeScreen(
 
 //Composable reutilizable para cada fila horizontal de peliculas
 @Composable
-fun MovieRow(title: String, movies: List<MovieDto>, imageBaseUrl : String){
+fun MovieRow(title: String,
+             movies: List<MovieDto>,
+             imageBaseUrl : String,
+             onMovieClick: (Int) -> Unit){
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -124,7 +142,10 @@ fun MovieRow(title: String, movies: List<MovieDto>, imageBaseUrl : String){
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(movies){movie ->
-                MovieItem(movie = movie, imageBaseUrl = imageBaseUrl)
+                MovieItem(
+                    movie = movie,
+                    imageBaseUrl = imageBaseUrl,
+                    onClick = {onMovieClick(movie.id)})
             }
         }
     }
@@ -133,13 +154,17 @@ fun MovieRow(title: String, movies: List<MovieDto>, imageBaseUrl : String){
 
 //composable individual para cada poster de pelicula
 @Composable
-fun MovieItem(movie: MovieDto, imageBaseUrl: String){
+fun MovieItem(movie:
+              MovieDto,
+              imageBaseUrl: String,
+              onClick: () -> Unit){
     val posterUrl = movie.posterPath?.let { "$imageBaseUrl$it" }
 
     Card(
         modifier = Modifier
             .width(130.dp)
-            .height(190.dp),
+            .height(190.dp)
+            .clickable{onClick()},
         shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.cardColors(containerColor = Color.DarkGray)
     ) {

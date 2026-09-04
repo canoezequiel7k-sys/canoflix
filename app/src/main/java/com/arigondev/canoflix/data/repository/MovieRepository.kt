@@ -24,4 +24,9 @@ class MovieRepository {
         val response = RetrofitClient.apiService.getMovieByGenre(apiKey, genreId = genreId)
         return response.results
     }
+
+    //obtener detalles de las peliculas por ID
+    suspend fun getMovieDetails(movieId: Int): MovieDto {
+        return RetrofitClient.apiService.getMovieDetails(movieId = movieId, apiKey = apiKey)
+    }
 }

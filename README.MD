@@ -63,9 +63,11 @@ Architecture:
 ###  Login display
 ![PANTALLA DEL LOGIN](screenshots/login_display_v1.0.0.png)
 
-
 ###  Register display
 ![PANTALLA DEL Register](screenshots/register_display_v1.0.0.png)
 
 ###  Home display
 ![PANTALLA HOME](screenshots/home_display_v1.0.0.png)
+
+###  Details Movies Display
+![PANTALLA DE DETALLES](screenshots/display_details_movie_v1.0.0.png)

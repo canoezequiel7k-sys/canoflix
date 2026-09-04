@@ -1,6 +1,7 @@
 package com.arigondev.canoflix.data.remote
 
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MovieApiService {
@@ -25,4 +26,14 @@ interface MovieApiService {
         @Query("with_genres") genreId: String, //ID del genero. ej: 28 = accion
         @Query("language") language: String = "es-ES"
     ): MovieResponse
+
+    //ENDPOINT PARA OBTENER LOS DETALLES DE UNA PELICULA
+    // URL resultante: https://api.themoviedb.org/3/movie/550?api_key=TU_KEY&language=es-ES
+    @GET("movie/{movie_id}")
+    suspend fun getMovieDetails(
+        @Path("movie_id") movieId: Int,
+        @Query("api_key") apiKey: String,
+        @Query("language") language: String = "es-ES"
+    ) : MovieDto
+
 }
