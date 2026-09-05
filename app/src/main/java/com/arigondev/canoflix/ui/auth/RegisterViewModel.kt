@@ -20,9 +20,14 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
+    //estado para saber que el registro fue exotoso
+    private val _isRegistrationSuccess = MutableStateFlow(false)
+    val isRegistrationSuccess: StateFlow<Boolean> = _isRegistrationSuccess.asStateFlow()
+
     //funcion de registro
-    fun register(email: String, pass: String, confirmPass: String, onRegisterSuccess: () -> Unit) {
+    fun register(email: String, pass: String, confirmPass: String) {
         val context = getApplication<Application>()
+        val usersDataStore = com.arigondev.canoflix.data.local.UsersDataStore(context)
 
         //Validaciones basicas
         if (email.isBlank() || pass.isBlank() || confirmPass.isBlank()) {
@@ -42,6 +47,7 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
             return
         }
 
+
         //lanzamos corrutina para guardar de forma asincrona
         viewModelScope.launch {
             _isLoading.value = true
@@ -50,9 +56,18 @@ class RegisterViewModel(application: Application) : AndroidViewModel(application
             try {
                 kotlinx.coroutines.delay(600) //simulamos tiempo de red
 
-                //guardamos el usuario en DataStore Preferences
-                authDataStore.saveUserSession(email = email, isLoggedIn = true)
-                onRegisterSuccess()
+                //creamos el objeto con la cuenta del usuario
+                val newUser = com.arigondev.canoflix.domain.model.UserAccount(email = email, password = pass)
+                //intentamos registrarlo en la BD Json
+                val isRegistered = usersDataStore.registerUser(newUser)
+
+                if (isRegistered){
+                    // ¡Éxito! Activamos la bandera, SIN iniciar sesión automáticamente
+                    _isRegistrationSuccess.value = true
+                }else{
+                    //si el correo ya estaba en uso
+                    _errorMessage.value = "El correo electronico ya esta registrado"
+                }
             } catch (e: Exception) {
                 _errorMessage.value = "Error al registrarse: ${e.localizedMessage}"
             } finally {

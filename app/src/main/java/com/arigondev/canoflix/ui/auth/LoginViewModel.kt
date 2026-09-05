@@ -26,16 +26,12 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     //funcion Login
     fun login(email: String, pass: String, onLoginSuccess: () -> Unit) {
         val context = getApplication<Application>()
+        val usersDataStore = com.arigondev.canoflix.data.local.UsersDataStore(context)
 
-        //validaciones basicas
-        if (email.isBlank() || pass.isBlank()) {
-            _errorMenssage.value = context.getString(R.string._errorMessage)
-            return
-        }
-        if (!email.contains("@")) {
-            _errorMenssage.value = context.getString(R.string._errorMensageEmail)
-            return
-        }
+       if (email.isBlank() || pass.isBlank()){
+           _errorMenssage.value = context.getString(R.string._errorMessage)
+           return
+       }
 
         //Si pasa las validaciones, lanzamos una corrutina en el viewModelScope
         viewModelScope.launch {
@@ -48,11 +44,19 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                 //simulamos una pequeña áusa de red(opcional, le da toque profesional
                 kotlinx.coroutines.delay(500)
 
-                //guardamos la sesion en dataStore Preferences
-                authDataStore.saveUserSession(email = email, isLoggedIn = true)
+                //buscamos si el usuario existe y la contraseña es correcta en la "BD" Json
+                val validUser = usersDataStore.validateUser(email, pass)
 
-                //ejecutamos el callback de exito para navegar a la pantalla principal
-                onLoginSuccess()
+                if (validUser != null){
+                    //si existe, guardamos la sesion y entramos
+                    authDataStore.saveUserSession(email = validUser.email, isLoggedIn = true)
+
+                    //ejecutamos el callback de exito para navegar a la pantalla principal
+                    onLoginSuccess()
+                }else{
+                    //si no existe o la contraseña falla
+                    _errorMenssage.value = "Correo electronico o contraseña incorrecta"
+                }
             //catch evita que la app muera si hay un error
             } catch (e: Exception) {
                 _errorMenssage.value = "${context.getString(R.string._errorMensageLogin)} ${e.localizedMessage}"

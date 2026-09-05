@@ -13,7 +13,11 @@ import kotlin.collections.emptyList
 
 val Context.favoritesDataStore by preferencesDataStore(name = "favorites_prefs")
 
-class FavoritesDataStore(private val context: Context) {
+class FavoritesDataStore(private val context: Context, private val userEmail: String) {
+
+    //lave unica para cada usuario
+    private val favoritesKey = stringPreferencesKey("favorites_key_${userEmail.lowercase()}")
+    private val gson = Gson()
     companion object{
         private val FAVORITES_JSON_KEY = stringPreferencesKey("favorites_json_key")
         private val gson = Gson()
@@ -22,7 +26,7 @@ class FavoritesDataStore(private val context: Context) {
     //flow que emite la lista de favoritos leidos desde el JSON
     val favoritesFlow: Flow<List<FavoriteMovie>> = context.favoritesDataStore.data
         .map{ preferences ->
-            val jsonString = preferences[FAVORITES_JSON_KEY]
+            val jsonString = preferences[favoritesKey]
             if (jsonString.isNullOrEmpty()){
                 emptyList()
             }else{
@@ -35,22 +39,22 @@ class FavoritesDataStore(private val context: Context) {
     //añadir o actualizar una pelicula en favoritos
     suspend fun addFavorite(movie: FavoriteMovie){
         context.favoritesDataStore.edit { preferences ->
-            val currentList = getFavoritesCurrentList(preferences[FAVORITES_JSON_KEY])
+            val currentList = getFavoritesCurrentList(preferences[favoritesKey])
 
             //si ya existe, remplazamos por si se actualizo la reseña o estrella
             val updatedList = currentList.filter {it.id != movie.id} + movie
 
             //convertimos la lista completa a JSON con Gson y la guardamos
-            preferences[FAVORITES_JSON_KEY] = gson.toJson(updatedList)
+            preferences[favoritesKey] = gson.toJson(updatedList)
         }
     }
 
     //eliminar una pelicula de favoritos por su ID
     suspend fun removeFavorite(movieId: Int){
         context.favoritesDataStore.edit { preferences ->
-            val currentList = getFavoritesCurrentList(preferences[FAVORITES_JSON_KEY])
+            val currentList = getFavoritesCurrentList(preferences[favoritesKey])
             val updatedList = currentList.filter {it.id != movieId}
-            preferences[FAVORITES_JSON_KEY] = gson.toJson(updatedList)
+            preferences[favoritesKey] = gson.toJson(updatedList)
         }
     }
 

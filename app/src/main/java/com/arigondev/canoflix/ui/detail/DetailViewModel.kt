@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arigondev.canoflix.data.local.AuthDataStore
 import com.arigondev.canoflix.data.local.FavoritesDataStore
 import com.arigondev.canoflix.data.remote.MovieDto
 import com.arigondev.canoflix.data.repository.MovieRepository
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 //SavedStateHandle nos permite recibir argumentos directamente desde la ruta de navegacion (NavGraph)
@@ -22,7 +24,7 @@ class DetailViewModel(
     savedStateHandle: SavedStateHandle
 ): AndroidViewModel(application) {
     private val repository = MovieRepository()
-    private val favoritesDataStore = FavoritesDataStore(application)
+    private val authDataStore = AuthDataStore(application)
 
     //extraemos el movilId que vino en la URL de navegacion
     private val movieId: Int = savedStateHandle.get<String>("movieId")?.toIntOrNull() ?: 0
@@ -50,8 +52,16 @@ class DetailViewModel(
 
     private fun checkIfFavorite(id: Int) {
         viewModelScope.launch {
-            favoritesDataStore.favoritesFlow.collectLatest { favoritesList ->
-                _isFavorite.value = favoritesList.any{it.id == id}
+            //escuchamos el email actual del usuario logeado
+            authDataStore.userEmailFlow.collectLatest{email ->
+                val userEmail = email ?: "guest"
+                val favoritesDataStore = FavoritesDataStore(getApplication(), userEmail)
+
+                //observamos los favoritos del usuario actual
+                favoritesDataStore.favoritesFlow.collectLatest { favoritesList ->
+                    _isFavorite.value = favoritesList.any{it.id == id}
+            }
+
             }
         }
     }
@@ -61,6 +71,10 @@ class DetailViewModel(
         val currentMovie = _movie.value ?: return
 
         viewModelScope.launch {
+            //obtenemos el email actual antes de guardar o borrar
+            val email = authDataStore.userEmailFlow.first() ?: "guest"
+            val favoritesDataStore = FavoritesDataStore(getApplication(), email)
+
             if (_isFavorite.value){
                 //si ya era favorita, la eliminamos
                 favoritesDataStore.removeFavorite(currentMovie.id)

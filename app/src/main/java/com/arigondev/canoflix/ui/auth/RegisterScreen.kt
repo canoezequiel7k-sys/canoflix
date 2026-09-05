@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -40,12 +41,13 @@ import com.arigondev.canoflix.ui.theme.CanoFlixTheme
 fun RegisterScreen(
     viewModel: RegisterViewModel = viewModel(),
     onNavigateToHome: () -> Unit,
-    onNavigateBackToLogin: () -> Unit
+    onNavigateBackToLogin: () -> Unit,
 ){
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
 
+    val isRegistrationSuccess by viewModel.isRegistrationSuccess.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
 
@@ -58,10 +60,9 @@ fun RegisterScreen(
         onConfirmPasswordChange = {confirmPassword = it},
         errorMessage = errorMessage,
         isLoading = isLoading,
+        isRegistrationSuccess = isRegistrationSuccess,
         onRegisterClick = {
-            viewModel.register(email, password, confirmPassword){
-                onNavigateToHome
-            }
+            viewModel.register(email, password, confirmPassword)
         },
         onNavigateBackToLogin = onNavigateBackToLogin
     )
@@ -78,6 +79,7 @@ fun RegisterScreenContent(
     onConfirmPasswordChange: (String) -> Unit,
     errorMessage: String?,
     isLoading: Boolean,
+    isRegistrationSuccess: Boolean,
     onRegisterClick: () -> Unit,
     onNavigateBackToLogin: () -> Unit
 ){
@@ -97,105 +99,128 @@ fun RegisterScreenContent(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            //Titulo de Registro
-            Text(
-                text = "Crear Cuenta",
-                color = netflixRed,
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold,
-                letterSpacing = 2.sp
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            //campo Email
-            OutlinedTextField(
-                value = email,
-                onValueChange = onEmailChange,
-                label = {Text("Correo electronico", color = MaterialTheme.colorScheme.outline)},
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = netflixRed,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-                    focusedTextColor = MaterialTheme.colorScheme.onBackground,
-                    unfocusedTextColor = MaterialTheme.colorScheme.onBackground
-                ),
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            //Campo para contraseña
-            OutlinedTextField(
-                value = password,
-                onValueChange = onPasswordChange,
-                label = {Text("Contraseña", color = MaterialTheme.colorScheme.outline)},
-                visualTransformation = PasswordVisualTransformation(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = netflixRed,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-                    focusedTextColor = MaterialTheme.colorScheme.onBackground,
-                    unfocusedTextColor = MaterialTheme.colorScheme.onBackground
-                ),
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            //Campo para confirmar Contraseña
-            OutlinedTextField(
-                value = confirmPassword,
-                onValueChange = onConfirmPasswordChange,
-                label = {Text("Confirmar contraseña", color = MaterialTheme.colorScheme.outline)},
-                visualTransformation = PasswordVisualTransformation(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = netflixRed,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
-                    focusedTextColor = MaterialTheme.colorScheme.onBackground,
-                    unfocusedTextColor = MaterialTheme.colorScheme.onBackground
-                ),
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            //mostrar mensaje de error si existe
-            if(errorMessage != null){
-                Spacer(modifier = Modifier.height(8.dp))
+            //preguntamos si el registro fue exitoso
+            if (isRegistrationSuccess){
                 Text(
-                    text = errorMessage,
-                    color = MaterialTheme.colorScheme.error,
-                    fontSize = 14.sp
+                    text = "¡Registrado correctamente! 🎉",
+                    color = Color.Gray,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
                 )
-            }
+                Spacer(modifier = Modifier.height(24.dp))
 
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            //Boton de Registro
-            Button(
-                onClick = onRegisterClick,
-                colors = ButtonDefaults.buttonColors(containerColor = netflixRed),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(40.dp),
-                enabled = !isLoading
-            ) {
-                if (isLoading){
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier.size(24.dp)
-                    )
-                }else{
-                    Text("Register", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Button(
+                    onClick = onNavigateBackToLogin,
+                    colors = ButtonDefaults.buttonColors(contentColor = netflixRed),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                ) {
+                    Text("Ir a Iniciar Sesion", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 }
-            }
+            }else{
+                //si aun no se registro, mostramos todo el formulario normal
+                //Titulo de Registro
+                Text(
+                    text = "Crear Cuenta",
+                    color = netflixRed,
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 2.sp
+                )
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
-            //Volver al login
-            TextButton(onClick = onNavigateBackToLogin) {
-                Text("Ya tienes cuenta? Inicia Sesion", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                //campo Email
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = onEmailChange,
+                    label = {Text("Correo electronico", color = MaterialTheme.colorScheme.outline)},
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = netflixRed,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                        focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onBackground
+                    ),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                //Campo para contraseña
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = onPasswordChange,
+                    label = {Text("Contraseña", color = MaterialTheme.colorScheme.outline)},
+                    visualTransformation = PasswordVisualTransformation(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = netflixRed,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                        focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onBackground
+                    ),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                //Campo para confirmar Contraseña
+                OutlinedTextField(
+                    value = confirmPassword,
+                    onValueChange = onConfirmPasswordChange,
+                    label = {Text("Confirmar contraseña", color = MaterialTheme.colorScheme.outline)},
+                    visualTransformation = PasswordVisualTransformation(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = netflixRed,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                        focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onBackground
+                    ),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                //mostrar mensaje de error si existe
+                if(errorMessage != null){
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = errorMessage,
+                        color = MaterialTheme.colorScheme.error,
+                        fontSize = 14.sp
+                    )
+                }
+
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                //Boton de Registro
+                Button(
+                    onClick = onRegisterClick,
+                    colors = ButtonDefaults.buttonColors(containerColor = netflixRed),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(40.dp),
+                    enabled = !isLoading
+                ) {
+                    if (isLoading){
+                        CircularProgressIndicator(
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }else{
+                        Text("Register", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                //Volver al login
+                TextButton(onClick = onNavigateBackToLogin) {
+                    Text("Ya tienes cuenta? Inicia Sesion", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
             }
         }
     }
@@ -215,6 +240,7 @@ fun RegisterScreenPreview() {
             onConfirmPasswordChange = {},
             errorMessage = null,
             isLoading = false,
+            isRegistrationSuccess = true,
             onRegisterClick = {},
             onNavigateBackToLogin = {}
         )
